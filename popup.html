@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Timer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div id="container">
+        <img src="images/alarmclock2.png" alt="">
+
+        <div class="studytimer-container">
+            <span class="studytimer-label">Study Timer:</span>
+            <div id="studytimer-display">30:00</div>
+            <div class="study-timer-buttons">
+                <button id="increase-button1">˄</button>
+                <button id="decrease-button1">˅</button>
+            </div>
+        </div>
+        
+        <div class="resttimer-container">
+            <span class="resttimer-label">Rest Timer:</span>
+            <div id="resttimer-display">10:00</div>
+            <div class="rest-timer-buttons">
+                <button id="increase-button2">˄</button>
+                <button id="decrease-button2">˅</button>
+            </div>
+        </div>
+
+        <button id="start-button">Start Timer</button>
+        <button id="reset-button">Reset Timer</button>
+
+        <audio id="alarmAudio" src="audio/alarm.mp3" preload="auto"></audio>
+        
+        <script src="popup.js"></script>
+    </div>
+</body>
+</html>
