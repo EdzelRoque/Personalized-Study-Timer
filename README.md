@@ -18,8 +18,6 @@ A lightweight Chrome extension that helps students and professionals stay produc
 
 ## 📸 Preview
 
-![popup screenshot](./assets/popup-screenshot.png)  
-*(Add your own screenshot if you have one — or take a clean screenshot of your popup and timer overlay)*
 ![image](https://github.com/user-attachments/assets/7ef8782a-59f7-49c3-bf60-d1af9588e0c7)
 
 ---
