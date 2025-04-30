@@ -1,54 +1,56 @@
-# Personalized Study Timer ⏰
+# ⏱️ Personalized Study Timer Chrome Extension
 
-**A Chrome extension to help students organize their study and rest sessions with customizable timers.**  
-Built with HTML, CSS, and JavaScript.
-
----
-
-## 📚 Features
-- Set a personalized study timer ⏳
-- Set a personalized rest timer 💤
-- Automatically cycles between study and rest periods
-- Increase or decrease timers before starting
-- Reset timers at any point
-- Simple, clean, and user-friendly interface
-- Audio alert to notify phase switches
+A lightweight Chrome extension that helps students and professionals stay productive by managing focused study sessions and structured breaks — inspired by the Pomodoro technique.
 
 ---
 
-## 🚀 Installation
-1. Clone or download this repository.
-2. Open Google Chrome and navigate to `chrome://extensions/`
-3. Enable **Developer mode** (top right corner).
-4. Click **Load unpacked** and select the project folder.
-5. Use the extension from your Chrome toolbar!
+## ✨ Features
+
+- 🕒 Set custom study and rest durations
+- 📌 Floating timer overlay on any website
+- ✅ Timer continues running even when popup is closed
+- ⏸️ Pause and resume anytime
+- ♻️ Automatic looping between study/rest cycles
+- 🔄 Works across tabs and websites
+- 💾 User settings persist until reset
 
 ---
 
-## 📷 Screenshots
-////////
+## 📸 Preview
+
+![popup screenshot](./assets/popup-screenshot.png)  
+*(Add your own screenshot if you have one — or take a clean screenshot of your popup and timer overlay)*
+![image](https://github.com/user-attachments/assets/7ef8782a-59f7-49c3-bf60-d1af9588e0c7)
 
 ---
 
-## 🛠️ Built With
-- HTML
-- CSS
-- JavaScript
-- Chrome Extensions API
+## 🚀 How to Install (Developer Mode)
+
+1. Clone or download this repository
+2. Go to `chrome://extensions` in your Chrome browser
+3. Enable **Developer mode** (top-right toggle)
+4. Click **Load unpacked**
+5. Select the folder where this project is located
+6. Use the extension from the Chrome toolbar popup
 
 ---
 
-## ✨ Future Improvements
-- Add pause functionality
-- Add desktop notifications
-- Save user settings
-- Daily progress tracking
+## 🔧 How It Works
+
+- The popup (`popup.html`) acts as the user control panel
+- Timer logic is managed by `background.js`, ensuring persistence even when popup is closed
+- `content.js` handles the floating timer that displays across webpages
+- Messages are passed between popup ↔ background ↔ content scripts via Chrome messaging API
 
 ---
 
-## 👨‍💻 Author
-**Edzel Roque**  
-2nd-year Computer Science Major at Stevens Institute of Technology  
-Interested in Software Engineering and AI/ML
+## 🙋 About the Developer
+
+Hi, my name is Edzel! I'm a 2/4 Computer Science student building software and tools that improve productivity and focus.  
+I'm always open to feedback, feature requests, or collaboration opportunities. 
 
 ---
+
+## 📄 License
+
+MIT License – free to use and modify.
