@@ -1,117 +1,150 @@
 const timerDisplay1 = document.getElementById("studytimer-display");
 const timerDisplay2 = document.getElementById("resttimer-display");
-
 const startButton = document.getElementById("start-button");
 const resetButton = document.getElementById("reset-button");
-
 const increaseButton1 = document.getElementById("increase-button1");
 const decreaseButton1 = document.getElementById("decrease-button1");
-
 const increaseButton2 = document.getElementById("increase-button2");
 const decreaseButton2 = document.getElementById("decrease-button2");
 
-let defaultStudyTime = 30 * 60; // default study timer is 30 minutes in seconds
-let defaultRestTime = 10 * 60; //default rest timer is 10 minutes in seconds
-let timeRemaining1 = defaultStudyTime; // 30 minutes in seconds -- timeRemaining1 represents study time remaining
-let timeRemaining2 = defaultRestTime; // 10 minutes in seconds -- timeRemaining2 represents rest time remaining
-let timerInterval;
+
+let studyTime = 30 * 60; // default study timer is 30 minutes in seconds
+let restTime = 10 * 60; // default rest timer is 10 minutes in seconds
+let timerStarted = false;
 
 
-// functions
-function startStudyTimer() {
-  if (timerInterval) return; // Prevent multiple timers from starting
-  let tempTime = timeRemaining1; // create a temp variable to capture the personalized user's time
-  timerInterval = setInterval(() => {
-    timeRemaining1--;
-    const minutes = Math.floor(timeRemaining1 / 60);
-    const seconds = timeRemaining1 % 60;
-    timerDisplay1.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-    if (timeRemaining1 <= 0) {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      timeRemaining1 = tempTime; // reset the study time remaining back to the user's set time
-      timerDisplay1.textContent = "Rest!";
-      startRestTimer();
-    }
-  }, 1000);
-}
 
-function startRestTimer() {
-  if (timerInterval) return; // Prevent multiple timers from starting
-  let tempTime = timeRemaining2; // create a temp variable to capture the personalized user's time
-  timerInterval = setInterval(() => {
-    timeRemaining2--;
-    const minutes = Math.floor(timeRemaining2 / 60);
-    const seconds = timeRemaining2 % 60;
-    timerDisplay2.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-    if (timeRemaining2 <= 0) {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      timeRemaining2 = tempTime; // reset the rest time remaining back to the user's set time
-      timerDisplay2.textContent = "Study!";
-      startStudyTimer();
-    }
-  }, 1000);
-}
 
-function resetTimers() {
-  // if (timerInterval==null) return; // If there was no timer started to begin with, don't do anything
-  clearInterval(timerInterval);
-  timerInterval = null;
-  timeRemaining1 = defaultStudyTime;
-  timeRemaining2 = defaultRestTime;
+// FUNCTIONS FOR TIMER AFTER IT STARTS
 
-  const minutes1 = Math.floor(timeRemaining1 / 60);
-  const seconds1 = timeRemaining1 % 60;
-  timerDisplay1.textContent = `${minutes1.toString().padStart(2, "0")}:${seconds1.toString().padStart(2, "0")}`;
+function showControlCenter() {
+  const popupContainer = document.getElementById("popup-container");
+  popupContainer.innerHTML = `
+    <h2>Timer is running!</h2>
+    <button id="pause-button">Pause</button>
+    <button id="reset-button2">Reset</button>
+  `;
   
-  const minutes2 = Math.floor(timeRemaining2 / 60);
-  const seconds2 = timeRemaining2 % 60;
-  timerDisplay2.textContent = `${minutes2.toString().padStart(2, "0")}:${seconds2.toString().padStart(2, "0")}`;
+  const pauseButton = document.getElementById("pause-button");
+  pauseButton.addEventListener("click", pausedDisplay);
+
+  const resetButton2 = document.getElementById("reset-button2");
+  resetButton2.addEventListener("click", resetTimers2);
+}
+
+function pausedDisplay() {
+  const popupContainer = document.getElementById("popup-container");
+  popupContainer.innerHTML = `
+    <h2>Timer is paused!</h2>
+    <button id="unpause-button">Unpause</button>
+    <button id="reset-button3">Reset</button>
+  `;
+  chrome.runtime.sendMessage({ action: "pause_timer" });
+
+  const unpauseButton = document.getElementById("unpause-button");
+  unpauseButton.addEventListener("click", () => {
+    chrome.runtime.sendMessage({ 
+      action: "start_timer",
+      studyTime: studyTime,
+      restTime: restTime
+    });
+    showControlCenter();
+  });
+
+  const resetButton3 = document.getElementById("reset-button3");
+  resetButton3.addEventListener("click", resetTimers2);
+}
+
+function resetTimers2() { // this reset function is for the timer when it is running
+  if (timerStarted) { // for the case that the timer is running
+    chrome.runtime.sendMessage({ action: "reset_timer" });
+  }
+  // here i want the original popup format to popup again
+  location.reload(); // this reloads the original popup html
+}
+
+
+
+
+
+
+// FUNCTIONS FOR TIMER BEFORE IT STARTS
+
+function updateStudyDisplay() {
+  const minutes = Math.floor(studyTime / 60);
+  const seconds = studyTime % 60;
+  timerDisplay1.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+}
+
+function updateRestDisplay() {
+  const minutes = Math.floor(restTime / 60);
+  const seconds = restTime % 60;
+  timerDisplay2.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+}
+
+function resetTimers1() { // this function is for the timer when the timer has not started yet
+  studyTime = 30 * 60; // reset to default 30 mins
+  restTime = 10 * 60; // reset to default 10 mins
+  updateStudyDisplay();
+  updateRestDisplay();
+
+  timerStarted = false; // reset back to false
 }
 
 function increaseTimer1() {
-  if (timerInterval!=null) return; // If the timer has already started, increase will not do anything
-  timeRemaining1 += 60; // add 1 minute to the time remaining
-  const minutes = Math.floor(timeRemaining1 / 60);
-  const seconds = timeRemaining1 % 60;
-  timerDisplay1.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  studyTime += 60; // add 1 minute to the time remaining
+  updateStudyDisplay();
 }
 
 function decreaseTimer1() {
-  if (timerInterval!=null || timeRemaining1 <= 0) return; // If the timer has already started, decrease will not do anything -- cannot decrease while timer is started
-  timeRemaining1 -= 60; // add 1 minute to the time remaining
-  const minutes = Math.floor(timeRemaining1 / 60);
-  const seconds = timeRemaining1 % 60;
-  timerDisplay1.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  if (studyTime <= 0) return; // If the timer has already started, decrease will not do anything -- cannot decrease while timer is started
+  studyTime -= 60; // add 1 minute to the time remaining
+  updateStudyDisplay();
 }
 
 function increaseTimer2() {
-  if (timerInterval!=null) return; // If the timer has already started, increase will not do anything -- cannot increase while timer is started
-  timeRemaining2 += 60; // add 1 minute to the time remaining
-  const minutes = Math.floor(timeRemaining2 / 60);
-  const seconds = timeRemaining2 % 60;
-  timerDisplay2.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  restTime += 60; // add 1 minute to the time remaining
+  updateRestDisplay();
 }
 
 function decreaseTimer2() {
-  if (timerInterval!=null || timeRemaining2 <= 0) return; // If the timer has already started, decrease will not do anything-- cannot decrease while timer is started
-  timeRemaining2 -= 60; // add 1 minute to the time remaining
-  const minutes = Math.floor(timeRemaining2 / 60);
-  const seconds = timeRemaining2 % 60;
-  timerDisplay2.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  if (restTime <= 0) return; // If the timer has already started, decrease will not do anything-- cannot decrease while timer is started
+  restTime -= 60; // add 1 minute to the time remaining
+  updateRestDisplay();
 }
 
 
-// event listeners
-startButton.addEventListener("click", startStudyTimer);
 
-resetButton.addEventListener("click", resetTimers);
+
+
+
+// event listeners
+
+startButton.addEventListener("click", () => {
+  chrome.runtime.sendMessage ({
+    action: "start_timer",
+    studyTime: studyTime,
+    restTime: restTime
+  });
+
+  timerStarted = true; // mark that timer has started
+  showControlCenter();
+});
+
+resetButton.addEventListener("click", resetTimers1);
 
 increaseButton1.addEventListener("click", increaseTimer1);
-
 decreaseButton1.addEventListener("click", decreaseTimer1);
-
 increaseButton2.addEventListener("click", increaseTimer2);
-
 decreaseButton2.addEventListener("click", decreaseTimer2);
+
+chrome.runtime.sendMessage({ action: "get_timer_status" }, (response) => { // response is a callback function
+  if (response) {
+    if (response.isRunning) {
+      timerStarted = true;
+      showControlCenter();
+    } else {
+      timerStarted = false;
+    }
+  }
+});

@@ -5,5 +5,23 @@
     "description": "A Chrome extension to help you stay productive with a timer.",
     "action": {
         "default_popup": "popup.html"
-    }
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"]
+        }
+    ],
+    "permissions": [
+        "storage",
+        "alarms",
+        "tabs",
+        "scripting"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ]
 }
