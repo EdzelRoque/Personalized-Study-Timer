@@ -3,6 +3,11 @@
     "name": "Personalized Study Timer",
     "version": "1.0",
     "description": "A Chrome extension to help you stay productive with a timer.",
+    "icons": {
+        "16": "images/final_red_study_icon_16x16.png",
+        "48": "images/final_red_study_icon_48x48.png",
+        "128": "images/final_red_study_icon_128x128.png"
+    },
     "action": {
         "default_popup": "popup.html"
     },
